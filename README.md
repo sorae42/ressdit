@@ -58,3 +58,7 @@ which port your instance is listening on.
 defaults to `"8080"`
 
 You should probably use Docker and configure the port from that.
+
+## Contribution to the main repo?
+
+Since this fork contains a lot of stuff that is specific to my use case, I might not PR the full thing but just some useful stuff.
