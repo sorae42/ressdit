@@ -28,7 +28,7 @@ func main() {
 		panic(err)
 	}
 
-	log.Println("starting reddit-rss")
+	log.Println("Starting...")
 
 	sentryHandler := sentryhttp.New(sentryhttp.Options{})
 

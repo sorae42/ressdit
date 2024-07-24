@@ -10,6 +10,15 @@ import (
 	"strconv"
 )
 
+// Subreddit details (About view).
+type SRDetails struct {
+	Title               string `json:"title"`
+	CommunityIcon       string `json:"community_icon"`
+	DisplayNamePrefixed string `json:"display_name_prefixed"`
+	PublicDescription   string `json:"public_description"`
+	URL                 string `json:"url"`
+}
+
 // Link contains information about a link.
 type Link struct {
 	ApprovedBy          string        `json:"approved_by"`
@@ -61,6 +70,7 @@ type Link struct {
 	Ups                 int           `json:"ups"`
 	UserReports         []interface{} `json:"user_reports"`
 	Visited             bool          `json:"visited"`
+	SRDetails           SRDetails     `json:"sr_detail"`
 
 	MediaMetadata       map[string]MediaMetadata `json:"media_metadata,omitempty"`
 	GalleryData         GalleryData              `json:"gallery_data,omitempty"`

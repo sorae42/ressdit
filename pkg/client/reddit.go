@@ -50,7 +50,7 @@ func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle Ge
 	ctx := r.Context()
 
 	if r.URL.String() == "/" {
-		http.Redirect(w, r, "https://www.reddit.com/r/rss/comments/fvg3ed/i_built_a_better_rss_feed_for_reddit/", 301)
+		http.Redirect(w, r, "https://www.reddit.com/r/rss/comments/fvg3ed/i_built_a_better_rss_feed_for_reddit/", http.StatusMovedPermanently)
 		return
 	}
 
@@ -82,14 +82,20 @@ func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle Ge
 		return
 	}
 
-	nowVal := now()
+	// Subreddit about details are returned in each posts when included with "sr_details=1"
+	// Attempt to grab them from the first post
+	sr_details := result.Data.Children[0].Data.SRDetails
+
+	// FIXME: Custom icon doesn't work atm.
+	if r.URL.String() == "/favicon.ico" {
+		http.Redirect(w, r, strings.Split(sr_details.CommunityIcon, "?")[0], http.StatusMovedPermanently)
+	}
+
 	feed := &feeds.Feed{
-		Title:       fmt.Sprintf("reddit-rss %s", r.URL),
-		Link:        &feeds.Link{Href: "https://www.reddit.com/r/rss/comments/fvg3ed/i_built_a_better_rss_feed_for_reddit/"},
-		Description: "Reddit RSS feed that links directly to the content",
-		Author:      &feeds.Author{Name: "Stephen Solka", Email: "stephen@solka.dev"},
-		Created:     nowVal,
-		Updated:     nowVal,
+		Title:       sr_details.Title,
+		Link:        &feeds.Link{Href: fmt.Sprintf("https://www.reddit.com%s", sr_details.URL)},
+		Description: sr_details.PublicDescription,
+		Image:       &feeds.Image{Url: strings.Split(sr_details.CommunityIcon, "?")[0], Title: sr_details.Title},
 	}
 
 	var limit int
@@ -159,28 +165,24 @@ func linkToFeed(client *RedditClient, getArticle GetArticleFn, link *reddit.Link
 	}
 	redditUrl := os.Getenv("REDDIT_URL")
 	if redditUrl == "" {
-		redditUrl = "https://old.reddit.com"
+		redditUrl = "https://www.reddit.com"
 	}
 	author := link.Author
-	authorLink := fmt.Sprintf("%s/u/%s", redditUrl, author)
-	content = fmt.Sprintf(`<p><a href="%s">u/%s</a>&nbsp;<a href="%s%s">comments</a></p> %s`, authorLink, author, redditUrl, link.Permalink, content)
 	u, err := url.Parse(link.URL)
 	if err == nil {
-		author = u.Host
+		_ = u.Host
 	}
 	t := time.Unix(int64(link.CreatedUtc), 0)
 	// if item link is to reddit, replace reddit with REDDIT_URL
-	itemLink := link.URL
-	if strings.HasPrefix(itemLink, "https://old.reddit.com") {
-		itemLink = fmt.Sprintf(`%s%s`, redditUrl, link.Permalink)
-	}
+	itemLink := fmt.Sprintf(`%s%s`, redditUrl, link.Permalink)
 	return &feeds.Item{
-		Title:   link.Title,
-		Link:    &feeds.Link{Href: itemLink},
-		Author:  &feeds.Author{Name: author},
-		Created: t,
-		Id:      link.ID,
-		Content: content,
+		Title:       link.Title,
+		Link:        &feeds.Link{Href: itemLink},
+		Description: link.Selftext,
+		Author:      &feeds.Author{Name: author},
+		Created:     t,
+		Id:          link.ID,
+		Content:     content,
 	}
 }
 
