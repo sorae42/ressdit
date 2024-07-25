@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -49,15 +50,6 @@ type NowFn = func() time.Time
 func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle GetArticleFn, w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	if r.URL.String() == "/" {
-		http.Redirect(w, r, "https://www.reddit.com/r/rss/comments/fvg3ed/i_built_a_better_rss_feed_for_reddit/", http.StatusMovedPermanently)
-		return
-	}
-
-	if r.URL.String() == "/favicon.ico" {
-		return
-	}
-
 	log.Printf("Fetch %s ", r.URL)
 
 	urlPath := strings.Split(r.URL.Path, "?")[0]
@@ -92,6 +84,13 @@ func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle Ge
 	}
 	defer resp.Body.Close()
 
+	// strict check - return 404 instead of being redirected by Reddit.
+	if match, err := regexp.MatchString(`^\/r\/[a-z]+\.json$`, resp.Request.URL.Path); err != nil || !match {
+		http.Error(w, "Subreddit not found.", http.StatusNotFound)
+		log.Println("ERROR: Subreddit not found")
+		return
+	}
+
 	var result linkListing
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
@@ -109,11 +108,9 @@ func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle Ge
 		Link:        &feeds.Link{Href: fmt.Sprintf("https://www.reddit.com%s", sr_details.URL)},
 		Description: sr_details.PublicDescription,
 		Image: &feeds.Image{
-			Url:    strings.Split(sr_details.CommunityIcon, "?")[0],
-			Title:  sr_details.Title,
-			Link:   fmt.Sprintf("https://www.reddit.com%s", sr_details.URL),
-			Width:  64,
-			Height: 64,
+			Url:   strings.Split(sr_details.CommunityIcon, "?")[0],
+			Title: sr_details.Title,
+			Link:  fmt.Sprintf("https://www.reddit.com%s", sr_details.URL),
 		},
 	}
 

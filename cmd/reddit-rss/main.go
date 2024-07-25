@@ -73,6 +73,17 @@ func main() {
 			Token:      token,
 			UserAgent:  userAgent,
 		}
+
+		if r.URL.String() == "/" {
+			http.Redirect(w, r, "https://github.com/sorae42/subreddit-rss/blob/main/README.md", http.StatusMovedPermanently)
+			log.Println("Hi! Please see installation instructions on how to add your RSS feed!")
+			return
+		}
+
+		if r.URL.String() == "/favicon.ico" {
+			return
+		}
+
 		client.RssHandler(baseApiUrl, time.Now, redditClient, client.GetArticle, w, r)
 	})
 
@@ -106,7 +117,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	log.Printf("Listening on port %s\n", port)
+	log.Println("Ready!")
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }
