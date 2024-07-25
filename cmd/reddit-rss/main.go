@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	const VERSION string = "ver1.2"
+	const VERSION string = "ver1.3"
 
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
