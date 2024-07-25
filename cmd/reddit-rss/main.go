@@ -18,6 +18,8 @@ import (
 )
 
 func main() {
+	const VERSION string = "ver1.2"
+
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
 	err := sentry.Init(sentry.ClientOptions{
@@ -28,7 +30,7 @@ func main() {
 		panic(err)
 	}
 
-	log.Println("Starting...")
+	log.Printf("subreddit-rss %s", VERSION)
 
 	sentryHandler := sentryhttp.New(sentryhttp.Options{})
 
@@ -64,7 +66,7 @@ func main() {
 		}
 		userAgent := os.Getenv("USER_AGENT")
 		if userAgent == "" {
-			userAgent = "subreddit-rss 1.0"
+			userAgent = "subreddit-rss " + VERSION
 		}
 		redditClient := &client.RedditClient{
 			HttpClient: httpClient,
@@ -104,6 +106,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	log.Printf("Listening on port %s\n", port)
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }

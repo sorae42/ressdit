@@ -74,6 +74,7 @@ func imgElement(media gReddit.MediaMetadata) string {
 
 var videoMissingErr = errors.New("video missing from json")
 
+// TODO: get text as well since some media posts have text in them.
 func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 	u := link.URL
 

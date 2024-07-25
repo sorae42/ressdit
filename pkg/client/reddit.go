@@ -54,7 +54,19 @@ func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle Ge
 		return
 	}
 
-	log.Println(r.URL)
+	if r.URL.String() == "/favicon.ico" {
+		return
+	}
+
+	log.Printf("Fetch %s ", r.URL)
+
+	urlPath := strings.Split(r.URL.Path, "?")[0]
+
+	if strings.Contains(urlPath, ".json") {
+		log.Println("WARN: Appending .json to url path is deprecated. This will likely to be removed in the future.")
+	} else {
+		r.URL.Path += ".json"
+	}
 
 	url := fmt.Sprintf("%s%s", redditURL, r.URL)
 	req, err := http.NewRequest("GET", url, nil)
@@ -75,6 +87,7 @@ func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle Ge
 	resp, err := client.HttpClient.Do(req)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+		log.Printf("ERROR: HTTP: %s", err.Error())
 		return
 	}
 	defer resp.Body.Close()
@@ -83,17 +96,13 @@ func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle Ge
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
+		log.Printf("ERROR: JSON: %s", err.Error())
 		return
 	}
 
 	// Subreddit about details are returned in each posts when included with "sr_details=1"
 	// Attempt to grab them from the first post
 	sr_details := result.Data.Children[0].Data.SRDetails
-
-	// FIXME: Custom icon doesn't work atm.
-	if r.URL.String() == "/favicon.ico" {
-		http.Redirect(w, r, strings.Split(sr_details.CommunityIcon, "?")[0], http.StatusMovedPermanently)
-	}
 
 	feed := &feeds.Feed{
 		Title:       sr_details.Title,

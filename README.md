@@ -16,9 +16,11 @@ Server will be started at http://localhost:8080 (or whatever the port you set ab
 
 To subscribe to a subreddit:
 
-1. Go to a subreddit or meta feed you like example: https://www.reddit.com/r/Touhou/
-2. Change the domain name to the server domain: https://localhost:8080/r/Touhou.json
+1. Go to a subreddit or meta feed you like example: https://www.reddit.com/r/Touhou
+2. Change the domain name to the server domain: https://localhost:8080/r/Touhou
 3. Subscribe to the url in your favorite feed reader.
+
+NOTE: Please **DO NOT** append `.json` to the url path. They are deprecated in this fork.
 
 ### OAUTH
 
@@ -40,7 +42,7 @@ USER_AGENT="browser:name-of-app:v1.0.0 (by /u/your-reddit-username)"
 -   `?scoreLimit=100` filter out posts with less than 100 up votes
 -   `?flair=Energy%20Products` only include posts that have that flair
 
-## configuration
+## Docker configuration
 
 to further configure your instance, you can set the following environment variables
 
