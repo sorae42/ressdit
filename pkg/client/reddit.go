@@ -85,7 +85,7 @@ func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle Ge
 	defer resp.Body.Close()
 
 	// strict check - return 404 instead of being redirected by Reddit.
-	if match, err := regexp.MatchString(`^\/r\/[a-z]+\.json$`, resp.Request.URL.Path); err != nil || !match {
+	if match, err := regexp.MatchString(`(?i)^\/r\/[a-z]+\.json$`, resp.Request.URL.Path); err != nil || !match {
 		http.Error(w, "Subreddit not found.", http.StatusNotFound)
 		log.Println("ERROR: Subreddit not found")
 		return
