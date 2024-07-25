@@ -4,22 +4,21 @@
 
 ## installation
 
-For development: `go build ./cmd/reddit-rss && ./reddit-rss`
+Using Go: `go build ./cmd/reddit-rss && ./reddit-rss`. 
 
-Use Docker for normal daily usage: 
+Using Docker (recommended): 
 
 1. Install Docker if you haven't.
 2. Run `docker build .`
-3. Then run `docker run -d -p<your port here>:8080 '<instance name>'` to run an reddit-rss instance.
+3. Then run `docker run -d -p<your port here>:8080 '<instance name>'` to run an subreddit-rss instance.
 
 Server will be started at http://localhost:8080 (or whatever the port you set above).
 
 To subscribe to a subreddit:
 
-1. Go to a subreddit or meta feed you like example: https://www.reddit.com/r/Android/
-2. Add `.json?sr_detail=1` onto the end: https://www.reddit.com/r/Android.json?sr_detail=1
-4. Change the domain name to the server domain: https://localhost:8080/r/android.json?sr_detail=1
-5. Subscribe to the url in your favorite feed reader.
+1. Go to a subreddit or meta feed you like example: https://www.reddit.com/r/Touhou/
+2. Change the domain name to the server domain: https://localhost:8080/r/Touhou.json
+3. Subscribe to the url in your favorite feed reader.
 
 ### OAUTH
 
@@ -53,12 +52,4 @@ it defaults to `"https://www.reddit.com"`. (yes, the new reddit interface)
 
 ### PORT
 
-which port your instance is listening on.
-
-defaults to `"8080"`
-
-You should probably use Docker and configure the port from that.
-
-## Contribution to the main repo?
-
-Since this fork contains a lot of stuff that is specific to my use case, I might not PR the full thing but just some useful stuff.
+Define which port your instance is listening on. Default to `8080`

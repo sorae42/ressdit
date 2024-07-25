@@ -68,6 +68,10 @@ func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle Ge
 		req.Header.Set("Authorization", fmt.Sprintf("bearer %s", client.Token.AccessToken))
 	}
 
+	q := req.URL.Query()
+	q.Add("sr_detail", "1")
+	req.URL.RawQuery = q.Encode()
+
 	resp, err := client.HttpClient.Do(req)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
@@ -95,7 +99,13 @@ func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle Ge
 		Title:       sr_details.Title,
 		Link:        &feeds.Link{Href: fmt.Sprintf("https://www.reddit.com%s", sr_details.URL)},
 		Description: sr_details.PublicDescription,
-		Image:       &feeds.Image{Url: strings.Split(sr_details.CommunityIcon, "?")[0], Title: sr_details.Title},
+		Image: &feeds.Image{
+			Url:    strings.Split(sr_details.CommunityIcon, "?")[0],
+			Title:  sr_details.Title,
+			Link:   fmt.Sprintf("https://www.reddit.com%s", sr_details.URL),
+			Width:  64,
+			Height: 64,
+		},
 	}
 
 	var limit int

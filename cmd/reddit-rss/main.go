@@ -64,7 +64,7 @@ func main() {
 		}
 		userAgent := os.Getenv("USER_AGENT")
 		if userAgent == "" {
-			userAgent = "reddit-rss 1.0"
+			userAgent = "subreddit-rss 1.0"
 		}
 		redditClient := &client.RedditClient{
 			HttpClient: httpClient,
