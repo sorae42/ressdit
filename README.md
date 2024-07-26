@@ -26,9 +26,12 @@ NOTE: Please **DO NOT** append `.json` to the url path. They are deprecated in t
 
 ### OAUTH
 
-To get access to better rate limits, you can set up an oauth app on reddit and provide the client id and secret as environment variables.
-Be sure to select script when asked what kind of app you are.
+To get access to better rate limits and be able to see post in private subreddits you have joined, you must set up an oauth app on reddit and provide infomations as environment variables.
+
+Be sure to select **script** when asked what kind of app you are.
 <https://old.reddit.com/prefs/apps/>
+
+You can create an `.env` file in the same directory as the executable.
 
 ```
 OAUTH_CLIENT_ID=your_client_id # its that id in the top left of the reddit app page

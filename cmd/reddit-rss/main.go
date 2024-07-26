@@ -11,6 +11,7 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	sentryhttp "github.com/getsentry/sentry-go/http"
+	"github.com/joho/godotenv"
 	"github.com/trashhalo/reddit-rss/pkg/client"
 	cache "github.com/victorspringer/http-cache"
 	"github.com/victorspringer/http-cache/adapter/redis"
@@ -19,6 +20,26 @@ import (
 
 func main() {
 	const VERSION string = "ver1.3"
+
+	log.Printf("subreddit-rss %s", VERSION)
+
+	enverr := godotenv.Load()
+	if enverr == nil {
+		log.Println("Loading environment variables...")
+	}
+
+	username := os.Getenv("REDDIT_USERNAME")
+	password := os.Getenv("REDDIT_PASSWORD")
+	oauthClientID := os.Getenv("OAUTH_CLIENT_ID")
+	oauthClientSecret := os.Getenv("OAUTH_CLIENT_SECRET")
+
+	if username != "" && password != "" {
+		if oauthClientID == "" || oauthClientSecret == "" {
+			log.Println("WARN: Login credentials provided without oauth client. This will be ignored.")
+		} else {
+			log.Printf("Logging in as %s", username)
+		}
+	}
 
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
@@ -29,8 +50,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	log.Printf("subreddit-rss %s", VERSION)
 
 	sentryHandler := sentryhttp.New(sentryhttp.Options{})
 
@@ -43,9 +62,8 @@ func main() {
 		httpClient := http.DefaultClient
 		var token *oauth2.Token
 		baseApiUrl := "https://www.reddit.com"
-		oauthClientID := os.Getenv("OAUTH_CLIENT_ID")
+
 		if oauthClientID != "" {
-			oauthClientSecret := os.Getenv("OAUTH_CLIENT_SECRET")
 			oauthCfg := &oauth2.Config{
 				ClientID:     oauthClientID,
 				ClientSecret: oauthClientSecret,
@@ -55,15 +73,15 @@ func main() {
 				},
 			}
 			// login with reddit user password
-			username := os.Getenv("REDDIT_USERNAME")
-			password := os.Getenv("REDDIT_PASSWORD")
 			token, err = oauthCfg.PasswordCredentialsToken(r.Context(), username, password)
 			if err != nil {
-				http.Error(w, err.Error(), 500)
+				log.Println("ERROR: Unable to login. Check your credentials.")
+				http.Error(w, err.Error()+"\nUnable to login. Check your credentials.", 500)
 				return
 			}
 			baseApiUrl = "https://oauth.reddit.com"
 		}
+
 		userAgent := os.Getenv("USER_AGENT")
 		if userAgent == "" {
 			userAgent = "subreddit-rss " + VERSION
