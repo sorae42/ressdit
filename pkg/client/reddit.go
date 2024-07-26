@@ -85,8 +85,8 @@ func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle Ge
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusForbidden {
-		http.Error(w, "Subreddit is private.\nPlease set up environment variable.", resp.StatusCode)
-		log.Printf("ERROR: Subreddit is private.\nPlease set up environment variable.")
+		http.Error(w, "Subreddit is private.", resp.StatusCode)
+		log.Printf("ERROR: Subreddit is private.")
 		return
 	}
 
