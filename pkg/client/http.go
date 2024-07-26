@@ -74,17 +74,19 @@ func imgElement(media gReddit.MediaMetadata) string {
 
 var videoMissingErr = errors.New("video missing from json")
 
-// TODO: get text as well since some media posts have text in them.
 func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 	u := link.URL
+	str := ""
 
-	if link.IsSelf {
-		str := html.UnescapeString(link.SelftextHTML)
-		return &str, nil
+	if link.Selftext != "" {
+		str += html.UnescapeString(link.SelftextHTML)
+		if link.IsSelf {
+			return &str, nil
+		}
 	}
 
 	if link.Media.Oembed.Type == "video" && link.Media.Oembed.HTML != "" {
-		str := html.UnescapeString(link.Media.Oembed.HTML)
+		str += html.UnescapeString(link.Media.Oembed.HTML)
 		return &str, nil
 	}
 
@@ -101,7 +103,7 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 			}
 		}
 		b.WriteString("</div>")
-		str := b.String()
+		str += b.String()
 		return &str, nil
 	}
 
@@ -122,7 +124,7 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 		vid, _ := doc.Find("meta[property=\"og:video:iframe\"]").Attr("content")
 		width, _ := doc.Find("meta[property=\"og:video:width\"]").Attr("content")
 		height, _ := doc.Find("meta[property=\"og:video:height\"]").Attr("content")
-		str := fmt.Sprintf("<div><iframe src=\"%s\" width=\"%s\" height=\"%s\"/> <img src=\"%s\" class=\"webfeedsFeaturedVisual\"/></div>", vid, width, height, img)
+		str = fmt.Sprintf("<div><iframe src=\"%s\" width=\"%s\" height=\"%s\"/> <img src=\"%s\" class=\"webfeedsFeaturedVisual\"/></div>", vid, width, height, img)
 		return &str, nil
 	}
 
@@ -138,7 +140,7 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 		if video == nil {
 			return nil, videoMissingErr
 		}
-		str := fmt.Sprintf("<iframe src=\"%s\" width=\"%d\" height=\"%d\"/> <img src=\"%s\" class=\"webfeedsFeaturedVisual\"/>", video.FallbackURL, video.Width, video.Height, link.Thumbnail)
+		str += fmt.Sprintf("<iframe src=\"%s\" width=\"%d\" height=\"%d\"/> <img src=\"%s\" class=\"webfeedsFeaturedVisual\"/>", video.FallbackURL, video.Width, video.Height, link.Thumbnail)
 		return &str, nil
 	}
 
@@ -154,10 +156,10 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 
 	switch knownTypes(t) {
 	case image:
-		str := fmt.Sprintf("<img src=\"%s\" class=\"webfeedsFeaturedVisual \"/>", url)
+		str += fmt.Sprintf("<img src=\"%s\" class=\"webfeedsFeaturedVisual \"/>", url)
 		return &str, nil
 	case video:
-		str := fmt.Sprintf("<video><source src=\"%s\" type=\"%s\" /></video>", url, t.String())
+		str += fmt.Sprintf("<video><source src=\"%s\" type=\"%s\" /></video>", url, t.String())
 		return &str, nil
 	}
 
@@ -165,6 +167,7 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return &article.Content, nil
 }
 
