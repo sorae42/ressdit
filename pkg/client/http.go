@@ -72,7 +72,7 @@ func imgElement(media gReddit.MediaMetadata) string {
 	}
 }
 
-var videoMissingErr = errors.New("video missing from json")
+var ErrVideoMissingFromJSON = errors.New("video missing from json")
 
 func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 	u := link.URL
@@ -132,13 +132,13 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 		video := link.SecureMedia.RedditVideo
 		if video == nil {
 			if len(link.CrossPostParentList) == 0 {
-				return nil, videoMissingErr
+				return nil, ErrVideoMissingFromJSON
 			}
 			parent := link.CrossPostParentList[0]
 			video = parent.SecureMedia.RedditVideo
 		}
 		if video == nil {
-			return nil, videoMissingErr
+			return nil, ErrVideoMissingFromJSON
 		}
 		str += fmt.Sprintf("<iframe src=\"%s\" width=\"%d\" height=\"%d\"/> <img src=\"%s\" class=\"webfeedsFeaturedVisual\"/>", video.FallbackURL, video.Width, video.Height, link.Thumbnail)
 		return &str, nil
@@ -171,7 +171,7 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 	return &article.Content, nil
 }
 
-func articleFromURL(ctx context.Context, client *http.Client, pageURL string, timeout time.Duration) (readability.Article, error) {
+func articleFromURL(ctx context.Context, client *http.Client, pageURL string) (readability.Article, error) {
 	// Make sure URL is valid
 	_, err := url.ParseRequestURI(pageURL)
 	if err != nil {

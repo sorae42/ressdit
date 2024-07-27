@@ -3,21 +3,11 @@ package reddit
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
 )
-
-// Subreddit details (About view).
-type SRDetails struct {
-	Title               string `json:"title"`
-	CommunityIcon       string `json:"community_icon"`
-	DisplayNamePrefixed string `json:"display_name_prefixed"`
-	PublicDescription   string `json:"public_description"`
-	URL                 string `json:"url"`
-}
 
 // Link contains information about a link.
 type Link struct {
@@ -70,7 +60,7 @@ type Link struct {
 	Ups                 int           `json:"ups"`
 	UserReports         []interface{} `json:"user_reports"`
 	Visited             bool          `json:"visited"`
-	SRDetails           SRDetails     `json:"sr_detail"`
+	SRDetails           Subreddit     `json:"sr_detail"`
 
 	MediaMetadata       map[string]MediaMetadata `json:"media_metadata,omitempty"`
 	GalleryData         GalleryData              `json:"gallery_data,omitempty"`
@@ -162,7 +152,7 @@ func (c *Client) HideLink(linkID string) error {
 	if err != nil {
 		return err
 	} else if resp.StatusCode >= 400 {
-		return errors.New(fmt.Sprintf("HTTP Status Code: %d", resp.StatusCode))
+		return fmt.Errorf("HTTP Status Code: %d", resp.StatusCode)
 	}
 	defer resp.Body.Close()
 
