@@ -124,6 +124,8 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 		vid, _ := doc.Find("meta[property=\"og:video:iframe\"]").Attr("content")
 		width, _ := doc.Find("meta[property=\"og:video:width\"]").Attr("content")
 		height, _ := doc.Find("meta[property=\"og:video:height\"]").Attr("content")
+
+		// I don't know whether width and height is necessary with gfycat here. I'm gonna leave it here for now.
 		str = fmt.Sprintf("<div><iframe src=\"%s\" width=\"%s\" height=\"%s\"/> <img src=\"%s\" class=\"webfeedsFeaturedVisual\"/></div>", vid, width, height, img)
 		return &str, nil
 	}
@@ -140,7 +142,7 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 		if video == nil {
 			return nil, ErrVideoMissingFromJSON
 		}
-		str += fmt.Sprintf("<iframe src=\"%s\" width=\"%d\" height=\"%d\"/> <img src=\"%s\" class=\"webfeedsFeaturedVisual\"/>", video.FallbackURL, video.Width, video.Height, link.Thumbnail)
+		str += fmt.Sprintf("<iframe src=\"%s\" style=\"border:none;\" /> <img src=\"%s\" class=\"webfeedsFeaturedVisual\"/>", video.FallbackURL, link.Thumbnail)
 		return &str, nil
 	}
 
