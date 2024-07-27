@@ -3,3 +3,4 @@ node_modules
 __debug_bin
 .vercel
 .env
+__debug_bin*
