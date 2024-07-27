@@ -202,10 +202,14 @@ func articleFromURL(ctx context.Context, client *http.Client, pageURL string) (r
 	tee := io.TeeReader(resp.Body, &buffer)
 
 	parser := readability.NewParser()
-	if !parser.IsReadable(tee) {
+	if !parser.Check(tee) {
 		return readability.Article{}, fmt.Errorf("the page is not readable")
 	}
 
-	// Parse content
-	return parser.Parse(&buffer, pageURL)
+	parsedURL, err := url.Parse(pageURL)
+	if err != nil {
+		return readability.Article{}, fmt.Errorf("failed to parse URL: %v", err)
+	}
+
+	return parser.Parse(&buffer, parsedURL)
 }
