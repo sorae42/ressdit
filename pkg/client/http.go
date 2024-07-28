@@ -7,16 +7,17 @@ import (
 	"fmt"
 	"html"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	gReddit "github.com/cameronstanley/go-reddit"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/go-shiori/go-readability"
+	"github.com/tiendc/go-linkpreview"
 )
 
 type fileType int
@@ -183,12 +184,26 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 		return &str, nil
 	}
 
-	article, err := readability.FromURL(url, 1*time.Second)
+	res, err := linkpreview.Parse(url,
+		linkpreview.ReturnMetaTags(true))
 	if err != nil {
+		log.Println("ERROR: Something went wrong while we are processing a post. ", err)
+		log.Println("Reference: ", url)
 		return nil, err
 	}
 
-	return &article.Content, nil
+	str += fmt.Sprintf(`<a href="%s" style="text-decoration:none;color:inherit">
+	<div style="border:1px solid gray">
+		<img src="%s" />
+		<div style="border-top:1px solid gray;padding:4px">
+			<span><strong>%s</strong></span><br />
+			<span><small>%s</small></span>
+		</div>
+	</div></a>`, url, res.MetaTags[8].Content, res.Title, strings.Split(url, "?")[0])
+
+	return &str, nil
+
+	// There might be more stuff to take care of, for now just hope I covered everything.
 }
 
 func articleFromURL(ctx context.Context, client *http.Client, pageURL string) (readability.Article, error) {
