@@ -18,15 +18,7 @@ Using Docker (recommended):
 
 Server will be started at http://localhost:8080 (or whatever the port you set above).
 
-To subscribe to a subreddit:
-
-1. Go to a subreddit or meta feed you like example: https://www.reddit.com/r/Touhou
-2. Change the domain name to the server domain: https://localhost:8080/r/Touhou
-3. Subscribe to the url in your favorite feed reader.
-
-NOTE: Please **DO NOT** append `.json` to the url path. They are deprecated in this fork.
-
-### OAUTH
+### Set up OAUTH
 
 To get access to better rate limits and be able to see post in private subreddits you have joined, you must set up an oauth app on reddit and provide infomations as environment variables.
 
@@ -45,6 +37,16 @@ REDDIT_USERNAME=your_reddit_username # the username of the account you created t
 REDDIT_PASSWORD=your_reddit_password # the password of the account you created the app with
 USER_AGENT="browser:name-of-app:v1.0.0 (by /u/your-reddit-username)"
 ```
+
+## Usage
+
+To subscribe to a subreddit:
+
+1. Go to a subreddit or meta feed you like example: https://www.reddit.com/r/Touhou
+2. Change the domain name to the server domain: https://localhost:8080/r/Touhou
+3. Subscribe to the url in your favorite feed reader.
+
+NOTE: Please **DO NOT** append `.json` to the url path. They are deprecated in this fork.
 
 ### Query Parameters
 
@@ -68,6 +70,6 @@ You should leave this as default and use Docker port mapping instead.
 
 ## Credits
 
-reddit-rss built by @trashhalo. [See original contributors](https://github.com/trashhalo/reddit-rss/graphs/contributors).
+reddit-rss built by [@trashhalo](https://github.com/trashhalo). [See original contributors](https://github.com/trashhalo/reddit-rss/graphs/contributors).
 
-Forked and maintained by @sorae42.
+Forked and maintained by [@sorae42](https://github.com/sorae42).
