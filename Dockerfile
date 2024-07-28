@@ -9,7 +9,7 @@ RUN go mod download
 
 COPY . ./
 
-RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -v -o server ./cmd/reddit-rss
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -v -o server ./cmd/ressdit
 FROM alpine:edge
 
 COPY --from=builder /app/server /server

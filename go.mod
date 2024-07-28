@@ -1,4 +1,4 @@
-module github.com/trashhalo/reddit-rss
+module github.com/sorae42/ressdit
 
 go 1.21
 

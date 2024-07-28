@@ -6,7 +6,7 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/cmd/reddit-rss"
+            "program": "${workspaceFolder}/cmd/ressdit"
         }
     ]
 }

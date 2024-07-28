@@ -12,7 +12,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/joho/godotenv"
-	"github.com/trashhalo/reddit-rss/pkg/client"
+	"github.com/sorae42/ressdit/pkg/client"
 	cache "github.com/victorspringer/http-cache"
 	"github.com/victorspringer/http-cache/adapter/redis"
 	"golang.org/x/oauth2"
@@ -21,7 +21,7 @@ import (
 func main() {
 	const VERSION string = "ver1.3"
 
-	log.Printf("subreddit-rss %s", VERSION)
+	log.Printf("Ressdit %s", VERSION)
 
 	enverr := godotenv.Load()
 	if enverr == nil {
@@ -84,7 +84,7 @@ func main() {
 
 		userAgent := os.Getenv("USER_AGENT")
 		if userAgent == "" {
-			userAgent = "subreddit-rss " + VERSION
+			userAgent = "Ressdit " + VERSION
 		}
 		redditClient := &client.RedditClient{
 			HttpClient: httpClient,
@@ -93,8 +93,7 @@ func main() {
 		}
 
 		if r.URL.String() == "/" {
-			http.Redirect(w, r, "https://github.com/sorae42/subreddit-rss/blob/main/README.md", http.StatusMovedPermanently)
-			log.Println("Hi! Please see installation instructions on how to add your RSS feed!")
+			http.Redirect(w, r, "https://github.com/sorae42/ressdit/blob/main/README.md", http.StatusMovedPermanently)
 			return
 		}
 
