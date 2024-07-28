@@ -51,6 +51,7 @@ func RssHandler(redditURL string, now NowFn, client *RedditClient, getArticle Ge
 	ctx := r.Context()
 
 	log.Printf("Fetch %s ", r.URL)
+	defer timer(r.URL.String())()
 
 	urlPath := strings.Split(r.URL.Path, "?")[0]
 
@@ -248,4 +249,11 @@ func articleLoader(client *RedditClient, getArticle GetArticleFn) *dataloader.Lo
 
 		return results
 	}, dataloader.WithBatchCapacity(10))
+}
+
+func timer(task string) func() {
+	start := time.Now()
+	return func() {
+		log.Printf("OK %s (%vms)", task, time.Since(start).Milliseconds())
+	}
 }

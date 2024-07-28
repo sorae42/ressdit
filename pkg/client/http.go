@@ -192,6 +192,12 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 		return nil, err
 	}
 
+	previewImage := ""
+
+	if len(res.OGMeta.Images) > 0 {
+		previewImage = res.OGMeta.Images[0].URL
+	}
+
 	str += fmt.Sprintf(`<a href="%s" style="text-decoration:none;color:inherit">
 	<div style="border:1px solid gray">
 		<img src="%s" />
@@ -199,7 +205,7 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 			<span><strong>%s</strong></span><br />
 			<span><small>%s</small></span>
 		</div>
-	</div></a>`, url, res.MetaTags[8].Content, res.Title, strings.Split(url, "?")[0])
+	</div></a>`, url, previewImage, res.Title, strings.Split(url, "?")[0])
 
 	return &str, nil
 
