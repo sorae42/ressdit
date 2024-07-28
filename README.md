@@ -14,9 +14,9 @@ Using Docker (recommended):
 
 1. Install Docker if you haven't.
 2. Run `docker build .`
-3. Then run `docker run -d -p<your port here>:8080 '<instance name>'` to run an ressdit instance.
+3. Then run `docker run -d -p<your port here>:5932 '<instance name>'` to run an ressdit instance.
 
-Server will be started at http://localhost:8080 (or whatever the port you set above).
+Server will be started at http://localhost:5932 (or whatever the port you set above).
 
 ### Set up OAUTH
 
