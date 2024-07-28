@@ -1,6 +1,6 @@
 module github.com/sorae42/ressdit
 
-go 1.21
+go 1.22
 
 toolchain go1.22.5
 
@@ -13,6 +13,7 @@ require (
 	github.com/gorilla/feeds v1.2.0
 	github.com/graph-gophers/dataloader v5.0.0+incompatible
 	github.com/joho/godotenv v1.5.1
+	github.com/tiendc/go-linkpreview v0.0.0-20240619195214-ed28db0d225e
 	github.com/victorspringer/http-cache v0.0.0-20240523143319-7d9f48f8ab91
 	golang.org/x/oauth2 v0.21.0
 )
@@ -32,7 +33,6 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/sergi/go-diff v1.3.1 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
-	github.com/tiendc/go-linkpreview v0.0.0-20240619195214-ed28db0d225e // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
