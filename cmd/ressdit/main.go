@@ -132,7 +132,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "5932"
 	}
 	log.Println("Ready!")
 

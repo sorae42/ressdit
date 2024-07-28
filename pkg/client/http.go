@@ -184,10 +184,17 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 		return &str, nil
 	}
 
+	if strings.Contains(u, "twitter.com") || strings.Contains(u, "x.com") {
+		twitterMedia := link.SecureMediaEmbed
+		str += fmt.Sprintf(`<iframe src="%s?is_nightmode=true" width="100%%" height="753px" scrolling="%t" style="border:none;background-color:#000a07;display:flex;justify-content:center" />`,
+			twitterMedia.MediaDomainURL, twitterMedia.Scrolling)
+		return &str, nil
+	}
+
 	res, err := linkpreview.Parse(url,
 		linkpreview.ReturnMetaTags(true))
 	if err != nil {
-		log.Println("ERROR: Something went wrong while we are processing a post. ", err)
+		log.Println("ERROR: Something went wrong while we are processing a link post.", err)
 		log.Println("Reference: ", url)
 		return nil, err
 	}
@@ -195,12 +202,12 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 	previewImage := ""
 
 	if len(res.OGMeta.Images) > 0 {
-		previewImage = res.OGMeta.Images[0].URL
+		previewImage = fmt.Sprintf(`<img src="%s" />`, res.OGMeta.Images[0].URL)
 	}
 
 	str += fmt.Sprintf(`<a href="%s" style="text-decoration:none;color:inherit">
 	<div style="border:1px solid gray">
-		<img src="%s" />
+		%s
 		<div style="border-top:1px solid gray;padding:4px">
 			<span><strong>%s</strong></span><br />
 			<span><small>%s</small></span>

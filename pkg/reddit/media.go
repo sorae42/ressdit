@@ -26,6 +26,14 @@ type SecureMedia struct {
 	RedditVideo *RedditVideoClass `json:"reddit_video"`
 }
 
+type SecureMediaEmbed struct {
+	Content        string `json:"content"`
+	Width          int    `json:"width"`
+	Height         int    `json:"height"`
+	Scrolling      bool   `json:"scrolling"`
+	MediaDomainURL string `json:"media_domain_url"`
+}
+
 type RedditVideoClass struct {
 	FallbackURL string `json:"fallback_url"`
 	Height      int64  `json:"height"`
