@@ -68,6 +68,6 @@ You should leave this as default and use Docker port mapping instead.
 
 ## Credits
 
-reddit-rss built by @trashhalo. [See original contributors](https://github.com/sorae42/ressdit/graphs/contributors?from=2020-03-29&to=2024-06-03&type=c).
+reddit-rss built by @trashhalo. [See original contributors](https://github.com/trashhalo/reddit-rss/graphs/contributors).
 
 Forked and maintained by @sorae42.
