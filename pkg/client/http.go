@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 	"time"
 
@@ -101,6 +102,9 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 
 	if link.Media.Oembed.Type == "video" && link.Media.Oembed.HTML != "" {
 		str += html.UnescapeString(link.Media.Oembed.HTML)
+		re := regexp.MustCompile(`(width|height)="[^"]*"`)
+		str = re.ReplaceAllString(str, "")
+
 		return &str, nil
 	}
 
