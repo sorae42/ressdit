@@ -19,7 +19,7 @@ import (
 )
 
 func main() {
-	const VERSION string = "ver1.3"
+	const VERSION string = "ver1.4"
 
 	log.Printf("Ressdit %s", VERSION)
 
