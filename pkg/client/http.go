@@ -80,6 +80,20 @@ func GetArticle(client *RedditClient, link *gReddit.Link) (*string, error) {
 
 	if link.Selftext != "" {
 		str += html.UnescapeString(link.SelftextHTML)
+
+		// replace preview.redd.it links with images
+		doc, err := goquery.NewDocumentFromReader(strings.NewReader(str))
+		if err != nil {
+			return nil, err
+		}
+
+		doc.Find("a[href^='https://preview.redd.it']").Each(func(_ int, s *goquery.Selection) {
+			href, _ := s.Attr("href")
+			s.ReplaceWithHtml(fmt.Sprintf("<img src=\"%s\" />", href))
+		})
+
+		str, _ = doc.Html()
+
 		if link.IsSelf {
 			return &str, nil
 		}
